@@ -1,0 +1,50 @@
+# AutoChain Emma+ — Docker Compose (démo / dev)
+# Usage: docker compose up -d
+
+services:
+  app:
+    image: webdevops/php-nginx:8.1-alpine
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/app
+    working_dir: /app
+    environment:
+      WEB_DOCUMENT_ROOT: /app/public
+      APP_ENV: local
+      DB_HOST: db
+      DB_DATABASE: autochain_emma
+      DB_USERNAME: autochain
+      DB_PASSWORD: secret
+    depends_on:
+      - db
+      - mailpit
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: autochain_emma
+      POSTGRES_USER: autochain
+      POSTGRES_PASSWORD: secret
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  mailpit:
+    image: axllent/mailpit
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+
+  hardhat:
+    image: node:20-alpine
+    working_dir: /blockchain
+    volumes:
+      - ./blockchain:/blockchain
+    command: sh -c "npm install && npx hardhat node --hostname 0.0.0.0"
+    ports:
+      - "8545:8545"
+
+volumes:
+  pgdata:

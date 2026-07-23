@@ -1,0 +1,18 @@
+{
+  "name": "autochain-emma-blockchain",
+  "version": "1.0.0",
+  "description": "Smart contracts AutoChain Emma+ — Moïse",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "node": "hardhat node",
+    "accounts": "node scripts/print-accounts.js",
+    "deploy:local": "hardhat run scripts/deploy.js --network localhost",
+    "deploy:hardhat": "hardhat run scripts/deploy.js --network hardhat",
+    "setup": "npm run compile && npm run deploy:hardhat && node scripts/print-accounts.js"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "hardhat": "^2.19.0"
+  }
+}

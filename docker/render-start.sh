@@ -3,8 +3,7 @@ set -e
 
 if [ -z "$DATABASE_URL" ]; then
   echo "ERREUR: DATABASE_URL manquant."
-  echo "Render -> Environment -> DATABASE_URL = Internal Database URL (PostgreSQL existante)"
-  echo "Ou base gratuite Neon: https://neon.tech"
+  echo "Render -> Environment -> DATABASE_URL = Connection string Neon ou PostgreSQL Render"
   exit 1
 fi
 
@@ -18,4 +17,6 @@ if [ "$SEED_DEMO" = "true" ]; then
   php artisan db:seed --force
 fi
 
-exec /entrypoint supervisord
+PORT="${PORT:-8000}"
+echo "Demarrage sur le port ${PORT}..."
+exec php artisan serve --host=0.0.0.0 --port="${PORT}"

@@ -1,26 +1,25 @@
 #!/bin/sh
 set -e
 
-# DATABASE_URL (Neon) ou variables separees (PostgreSQL Render liee)
-if [ -z "$DATABASE_URL" ] && [ -n "$DB_HOST" ]; then
+# PostgreSQL via DATABASE_URL (Neon / Render) ou SQLite automatique (demo)
+if [ -n "$DATABASE_URL" ]; then
+  export DB_CONNECTION="${DB_CONNECTION:-pgsql}"
+  echo "Base PostgreSQL detectee (DATABASE_URL)."
+elif [ -n "$DB_HOST" ]; then
   DB_PORT="${DB_PORT:-5432}"
+  export DB_CONNECTION=pgsql
   export DATABASE_URL="postgresql://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_DATABASE}?sslmode=require"
-fi
-
-if [ -z "$DATABASE_URL" ]; then
-  echo "ERREUR: base de donnees non configuree."
-  echo ""
-  echo "Option A — Neon (gratuit, recommande):"
-  echo "  1. https://neon.tech -> New Project -> copier Connection string"
-  echo "  2. Render -> Environment -> DATABASE_URL = postgresql://..."
-  echo ""
-  echo "Option B — PostgreSQL Render existante:"
-  echo "  Render -> Web Service -> Environment -> Add Database -> choisir votre PostgreSQL"
-  echo ""
-  exit 1
+  echo "Base PostgreSQL detectee (variables Render)."
+else
+  export DB_CONNECTION=sqlite
+  export DB_DATABASE="${DB_DATABASE:-/app/storage/database/render.sqlite}"
+  mkdir -p /app/storage/database
+  touch "$DB_DATABASE"
+  echo "Mode demo SQLite: ${DB_DATABASE}"
 fi
 
 php artisan storage:link 2>/dev/null || true
+php artisan config:clear
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache

@@ -2,10 +2,11 @@ FROM php:8.1-cli-alpine
 
 RUN apk add --no-cache \
     nodejs npm \
+    sqlite-dev \
     postgresql-dev \
     libzip-dev \
     oniguruma-dev \
-    && docker-php-ext-install pdo pdo_pgsql mbstring bcmath zip
+    && docker-php-ext-install pdo pdo_sqlite pdo_pgsql mbstring bcmath zip
 
 WORKDIR /app
 
@@ -20,6 +21,9 @@ RUN npm ci
 COPY . .
 
 RUN composer dump-autoload --optimize && npm run build
+
+RUN mkdir -p storage/database storage/app/documents storage/logs storage/framework/cache storage/framework/sessions storage/framework/views \
+    && chmod -R 775 storage bootstrap/cache
 
 RUN chmod +x /app/docker/render-start.sh
 

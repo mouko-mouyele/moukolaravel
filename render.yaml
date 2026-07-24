@@ -1,11 +1,6 @@
-# AutoChain Emma+ — Render Blueprint (WEB SEULEMENT, sans base PostgreSQL)
-# Render plan gratuit = 1 seule base max. Ne pas creer de database ici.
-#
-# AVANT de lancer le Blueprint:
-# 1. Supprimez les anciens Blueprint / Web Service en echec sur Render
-# 2. Trouvez votre PostgreSQL existante (Dashboard -> Search "postgres")
-#    OU creez une base sur https://neon.tech (gratuit, recommande)
-# 3. Apres Apply, renseignez DATABASE_URL et APP_URL dans Environment
+# AutoChain Emma+ — Render (Web Service Docker)
+# SQLite auto si DATABASE_URL absent (demo soutenance).
+# Production: ajouter DATABASE_URL (Neon) dans Environment.
 
 services:
   - type: web
@@ -27,10 +22,6 @@ services:
         sync: false
       - key: LOG_CHANNEL
         value: stderr
-      - key: DB_CONNECTION
-        value: pgsql
-      - key: DATABASE_URL
-        sync: false
       - key: SESSION_DRIVER
         value: file
       - key: CACHE_DRIVER

@@ -10,7 +10,13 @@
     <link rel="manifest" href="/manifest.json">
     <link rel="apple-touch-icon" href="/icons/icon-192.svg">
     <title>AutoChain Emma+ — Moïse</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @if (file_exists(public_path('build/manifest.json')))
+        @php($manifest = json_decode(file_get_contents(public_path('build/manifest.json')), true))
+        <link rel="stylesheet" href="{{ asset('build/'.$manifest['resources/css/app.css']['file']) }}">
+        <script type="module" src="{{ asset('build/'.$manifest['resources/js/app.js']['file']) }}"></script>
+    @else
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @endif
 </head>
 <body>
     <div id="app"></div>

@@ -10,20 +10,29 @@
     <link rel="manifest" href="/manifest.json">
     <link rel="apple-touch-icon" href="/icons/icon-192.svg">
     <title>AutoChain Emma+ — Moïse</title>
-    @if (file_exists(public_path('build/manifest.json')))
-        @php($manifest = json_decode(file_get_contents(public_path('build/manifest.json')), true))
-        <link rel="stylesheet" href="{{ asset('build/'.$manifest['resources/css/app.css']['file']) }}">
-        <script type="module" src="{{ asset('build/'.$manifest['resources/js/app.js']['file']) }}"></script>
-    @else
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @php
+        $cssFile = null;
+        $jsFile = null;
+        $manifestPath = public_path('build/manifest.json');
+        if (is_readable($manifestPath)) {
+            $manifest = json_decode(file_get_contents($manifestPath), true);
+            $cssFile = $manifest['resources/css/app.css']['file'] ?? null;
+            $jsFile = $manifest['resources/js/app.js']['file'] ?? null;
+        }
+    @endphp
+    @if ($cssFile && $jsFile)
+        <link rel="stylesheet" href="{{ asset('build/'.$cssFile) }}">
+        <script type="module" src="{{ asset('build/'.$jsFile) }}"></script>
     @endif
 </head>
 <body>
     <div id="app"></div>
+    @if ($jsFile)
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js'));
         }
     </script>
+    @endif
 </body>
 </html>

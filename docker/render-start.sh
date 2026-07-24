@@ -19,6 +19,7 @@ elif [ -n "$DB_HOST" ]; then
 else
   export DB_CONNECTION=sqlite
   export DB_DATABASE="/app/storage/database/render.sqlite"
+  export SESSION_DRIVER=array
   unset DATABASE_URL
   mkdir -p /app/storage/database
   touch "$DB_DATABASE"

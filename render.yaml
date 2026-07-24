@@ -1,11 +1,11 @@
-# AutoChain Emma+ — Déploiement Render (Blueprint)
-# Dashboard Render → New → Blueprint → connecter ce repo GitHub
-
-databases:
-  - name: autochain-db
-    plan: free
-    databaseName: autochain_emma
-    user: autochain
+# AutoChain Emma+ — Render Blueprint (WEB SEULEMENT, sans base PostgreSQL)
+# Render plan gratuit = 1 seule base max. Ne pas creer de database ici.
+#
+# AVANT de lancer le Blueprint:
+# 1. Supprimez les anciens Blueprint / Web Service en echec sur Render
+# 2. Trouvez votre PostgreSQL existante (Dashboard -> Search "postgres")
+#    OU creez une base sur https://neon.tech (gratuit, recommande)
+# 3. Apres Apply, renseignez DATABASE_URL et APP_URL dans Environment
 
 services:
   - type: web
@@ -30,9 +30,7 @@ services:
       - key: DB_CONNECTION
         value: pgsql
       - key: DATABASE_URL
-        fromDatabase:
-          name: autochain-db
-          property: connectionString
+        sync: false
       - key: SESSION_DRIVER
         value: file
       - key: CACHE_DRIVER
